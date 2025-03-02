@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "36605832444",
+    "project_id": "avapos-93508",
+    "storage_bucket": "avapos-93508.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36605832444:android:5c2f82de7d35b6e73dfb79",
+        "android_client_info": {
+          "package_name": "com.example.demoNfc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgxHzU6MDK81WCXVFJmMsaOaWVwFqNafw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

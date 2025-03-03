@@ -1,3 +1,4 @@
+import 'package:demo_nfc/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -9,6 +10,9 @@ class DeviceSettingController extends GetxController {
   TextEditingController secondAfterCont = TextEditingController();
 
   late Box settingsBox;
+
+  // Observable list to store products fetched from the API
+  var products = <Map<String, dynamic>>[].obs;
 
   @override
   void onInit() {
@@ -33,5 +37,24 @@ class DeviceSettingController extends GetxController {
     debugPrint('Machine ID: ${machineIdCont.text}');
     debugPrint('Second Before Starting: ${secondBeforeCont.text}');
     debugPrint('Second After Starting: ${secondAfterCont.text}');
+  }
+
+  // Fetch products based on entered Board ID
+  Future<void> fetchProducts() async {
+    String boardId = boardIdCont.text.trim();
+
+    if (boardId.isEmpty) {
+      Get.snackbar("Error", "Board ID cannot be empty");
+      return;
+    }
+
+    try {
+      var response = await ApiService.fetchProducts(boardId);
+      products.value = List<Map<String, dynamic>>.from(response);
+
+      debugPrint("Fetched ${products.length} products.");
+    } catch (e) {
+      Get.snackbar("Error", "Failed to fetch products: ${e.toString()}");
+    }
   }
 }

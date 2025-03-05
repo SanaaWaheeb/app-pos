@@ -2,6 +2,7 @@ import 'package:demo_nfc/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:demo_nfc/models/product_model.dart';
 
 class DeviceSettingController extends GetxController {
   TextEditingController boardIdCont = TextEditingController();
@@ -12,7 +13,7 @@ class DeviceSettingController extends GetxController {
   late Box settingsBox;
 
   // Observable list to store products fetched from the API
-  var products = <Map<String, dynamic>>[].obs;
+  var products = <Product>[].obs;
 
   @override
   void onInit() {
@@ -50,7 +51,8 @@ class DeviceSettingController extends GetxController {
 
     try {
       var response = await ApiService.fetchProducts(boardId);
-      products.value = List<Map<String, dynamic>>.from(response);
+      products.value =
+          response.map<Product>((json) => Product.fromJson(json)).toList();
 
       debugPrint("Fetched ${products.length} products.");
     } catch (e) {

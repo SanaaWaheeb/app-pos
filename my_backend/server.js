@@ -23,17 +23,6 @@ db.connect(err => {
 });
 
 // ------------------ Define API routes ------------------
-// API Route: Fetch Users
-app.get("/users", (req, res) => {
-    const query = "SELECT * FROM users";
-    db.query(query, (err, results) => {
-        if (err) {
-            res.status(500).json({ error: err });
-            return;
-        }
-        res.json(results);
-    });
-});
 
 // API Route: filter products
 app.get('/products/:boardId', (req, res) => {
@@ -49,7 +38,7 @@ app.get('/products/:boardId', (req, res) => {
         const machineId = machineResults[0].id;
 
         // Step 2: Find track_ids from tracks table for this machine id
-        const trackQurry = "SELECT product, price from tracks where machine = ?";
+        const trackQurry = "SELECT product, price, name from tracks where machine = ?";
         db.query(trackQurry, [machineId], (err, trackResults) => {
             if (err || trackResults.length === 0) {
                 return res.status(404).json({ error: "No tracks found for this machine" });
@@ -65,10 +54,12 @@ app.get('/products/:boardId', (req, res) => {
 
                 // Merge track price with product details
                 const finalProducts = productResults.map(product => {
-                    const track = trackResults.find(t => t.product === product.id);
+                    const track = trackResults.find(t => t.product.toString().trim() === product.id.toString().trim());
                     return {
                         ...product,   // Spread original product details
-                        price: track.price // Add price from trackResults
+                        id: product.id? product.id.toString() : '',
+                        price: track ? track.price : product.price,
+                        timer: track ? track.name.toString() : '',
                     }
                 })
                 res.json(finalProducts);
@@ -77,19 +68,6 @@ app.get('/products/:boardId', (req, res) => {
     })
 })
 
-// API Route: fetch machine id
-app.get('/machine-id/:boardId', (req, res) => {
-    const boardId = req.params.boardId;
-    const query = "SELECT id FROM machines where name = ?";
-
-    db.query(query, [boardId], (err, result) => {
-        if (err) {
-            res.status(500).json({ error: err });
-            return;
-        }
-        res.json(result);
-    })
-})
 
 // Start Server
 app.listen(3000, () => {

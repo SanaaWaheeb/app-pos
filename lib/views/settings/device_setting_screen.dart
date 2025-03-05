@@ -57,11 +57,11 @@ class DeviceSettingScreen extends StatelessWidget {
                       customTextField(
                           hintText: "Board ID".tr,
                           controller: devController.boardIdCont),
-                      const SizedBox(height: 20),
-                      customTextField(
-                          hintText: "Meachine ID".tr,
-                          controller: devController.machineIdCont),
-                      const SizedBox(height: 20),
+                      // const SizedBox(height: 20),
+                      // customTextField(
+                      //     hintText: "Meachine ID".tr,
+                      //     controller: devController.machineIdCont),
+                      // const SizedBox(height: 20),
                     ],
                   ),
                 ),
@@ -131,7 +131,7 @@ class DeviceSettingScreen extends StatelessWidget {
                     "Device settings saved successfully".tr,
                     snackPosition: SnackPosition.TOP,
                   );
-                 Get.toNamed(Routes.settingScreen);
+                  Get.toNamed(Routes.settingScreen);
                 },
               ),
             ],

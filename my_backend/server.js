@@ -29,7 +29,7 @@ app.get('/products/:boardId', (req, res) => {
     const boardId = req.params.boardId;
 
     // Step 1: Find machine_id from machines table where name matches boardId
-    const machineQyery = "SELECT id from machines where name = ?";
+    const machineQyery = "SELECT id from machines where machine_board_id = ?";
     db.query(machineQyery, [boardId],  (err, machineResults) => {
         if (err || machineResults.length === 0) {
             return res.status(404).json({ error: "Machine not found" });

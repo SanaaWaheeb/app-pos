@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hive/hive.dart';
+import 'package:demo_nfc/controllers/device_setting_controller.dart';
 
 class DashboardViewScreen extends StatefulWidget {
   const DashboardViewScreen({super.key});
@@ -31,6 +32,8 @@ class _DashboardViewScreenState extends State<DashboardViewScreen> {
   Timer? _tapTimer;
   ThemeController cont = Get.put(ThemeController());
   final ThemeToggleButton themeToggleButton = ThemeToggleButton();
+  final DeviceSettingController devController =
+      Get.put(DeviceSettingController());
   final storage = GetStorage();
   _SelectedTab? _selectedTab;
   final Box<Help> helpBox = Hive.box<Help>('helpBox');
@@ -41,6 +44,7 @@ class _DashboardViewScreenState extends State<DashboardViewScreen> {
     super.initState();
     print("DashboardViewScreen initialized");
     productBox = Hive.box<Product>('productsBox');
+    devController.fetchProducts(); // Fetch products when the page opens
   }
 
   void _handleTap() {
@@ -127,15 +131,14 @@ class _DashboardViewScreenState extends State<DashboardViewScreen> {
                 Expanded(
                   child: ListView.builder(
                     padding: EdgeInsets.zero,
-                    itemCount:
-                        productBox.length + 1, // Increase item count by 1
+                    itemCount: devController.products.length + 1,
                     itemBuilder: (context, index) {
-                      if (index == productBox.length) {
+                      if (index == devController.products.length) {
                         // Return a SizedBox with the desired padding for the last item
                         return SizedBox(height: 100);
                       }
 
-                      final product = productBox.getAt(index)!;
+                      final product = devController.products[index];
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: GestureDetector(

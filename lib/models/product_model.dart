@@ -47,14 +47,14 @@ class Product extends HiveObject {
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       name: json['name'] ?? '',
-      namearabic: json['namearabic'] ?? '',
+      namearabic: json['arabic_name'] ?? '',
       description: json['description'] ?? '',
-      descriptionarabic: json['descriptionarabic'] ?? '',
+      descriptionarabic: json['arabic_product_description'] ?? '',
       id: json['id'] ?? '',
       tid: json['tid'] ?? '',
       price: (json['price'] ?? 0.0).toDouble(),
       timer: json['timer'] ?? '',
-      imagePath: json['imagePath'] ?? '',
+      imagePath: json['is_cover'] ?? '',
     );
   }
 }

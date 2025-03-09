@@ -165,23 +165,18 @@ class _DashboardViewScreenState extends State<DashboardViewScreen> {
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
                                 children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(14),
-                                    child: product.imagePath.isNotEmpty
-                                        ? Image.file(
-                                            File(product.imagePath),
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.3,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.22,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : const Placeholder(),
-                                  ),
+                                 ClipRRect(
+                                  borderRadius: BorderRadius.circular(14),
+                                  child: product.imagePath.isNotEmpty
+                                      ? Image.network(
+                                          "https://ava.sa/app/storage/uploads/is_cover_image/${product.imagePath}",
+                                          width: MediaQuery.of(context).size.width * 0.3,
+                                          height: MediaQuery.of(context).size.height * 0.22,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) => const Placeholder(), // Handles error cases
+                                        )
+                                      : const Placeholder(),
+                                ),
                                   Expanded(
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),

@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:crystal_navigation_bar/crystal_navigation_bar.dart';
 import 'package:demo_nfc/Routes/app_pages.dart';
 import 'package:demo_nfc/config/colors.dart';
@@ -37,14 +35,13 @@ class _DashboardViewScreenState extends State<DashboardViewScreen> {
   final storage = GetStorage();
   _SelectedTab? _selectedTab;
   final Box<Help> helpBox = Hive.box<Help>('helpBox');
-  late Box<Product> productBox;
 
   @override
   void initState() {
     super.initState();
-    print("DashboardViewScreen initialized");
-    productBox = Hive.box<Product>('productsBox');
-    devController.fetchProducts(); // Fetch products when the page opens
+    Future.delayed(Duration.zero, () {
+      devController.fetchProducts(); // Ensures products are fetched properly
+    });
   }
 
   void _handleTap() {
@@ -52,7 +49,6 @@ class _DashboardViewScreenState extends State<DashboardViewScreen> {
       _tapCount += 1;
     });
 
-    // Cancel any existing timer and start a new one
     _tapTimer?.cancel();
     _tapTimer = Timer(Duration(seconds: 1), () {
       setState(() {
@@ -64,7 +60,7 @@ class _DashboardViewScreenState extends State<DashboardViewScreen> {
       Get.toNamed(Routes.login);
       debugPrint('Hidden button tapped 5 times');
       _tapCount = 0;
-      _tapTimer?.cancel(); // Cancel the timer when the condition is met
+      _tapTimer?.cancel();
     }
   }
 
@@ -129,172 +125,19 @@ class _DashboardViewScreenState extends State<DashboardViewScreen> {
                 ),
                 const SizedBox(height: 10),
                 Expanded(
-                  child: ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemCount: devController.products.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == devController.products.length) {
-                        // Return a SizedBox with the desired padding for the last item
-                        return SizedBox(height: 100);
-                      }
-
-                      final product = devController.products[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            double displayedPrice = product.price;
-                            int priceInCents = (displayedPrice * 100).toInt();
-
-                            Get.to(() => PaymentProcessingScreen(
-                                  productPrice: priceInCents.toDouble(),
-                                  itemProduct: product,
-                                ));
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: storage.read('isDarkMode') == true ||
-                                      cont.isDarkTheme.value
-                                  ? AppColors.secondaryColor.withOpacity(0.4)
-                                  : AppColors.whiteColor,
-                              border: Border.all(color: AppColors.whiteColor),
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                 ClipRRect(
-                                  borderRadius: BorderRadius.circular(14),
-                                  child: product.imagePath.isNotEmpty
-                                      ? Image.network(
-                                          "https://ava.sa/app/storage/uploads/is_cover_image/${product.imagePath}",
-                                          width: MediaQuery.of(context).size.width * 0.3,
-                                          height: MediaQuery.of(context).size.height * 0.22,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) => const Placeholder(), // Handles error cases
-                                        )
-                                      : const Placeholder(),
-                                ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            languageController.selectedLanguage
-                                                        .value ==
-                                                    'ar'
-                                                ? product.namearabic
-                                                : product.name.tr,
-                                            style: TextStyle(
-                                                color: storage.read(
-                                                                'isDarkMode') ==
-                                                            true ||
-                                                        cont.isDarkTheme.value
-                                                    ? AppColors.whiteColor
-                                                    : AppColors.secondaryColor,
-                                                fontFamily: "Roboto",
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          Text(
-                                            languageController.selectedLanguage
-                                                        .value ==
-                                                    'ar'
-                                                ? product.descriptionarabic
-                                                : product.description.tr,
-                                            style: TextStyle(
-                                                color: storage.read(
-                                                                'isDarkMode') ==
-                                                            true ||
-                                                        cont.isDarkTheme.value
-                                                    ? AppColors.whiteColor
-                                                    : AppColors.secondaryColor,
-                                                fontFamily: "Roboto",
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500),
-                                          ),
-                                          const SizedBox(height: 10),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                '${product.price.toStringAsFixed(2)} SAR'
-                                                    .tr,
-                                                style: TextStyle(
-                                                    color: storage.read(
-                                                                    'isDarkMode') ==
-                                                                true ||
-                                                            cont.isDarkTheme
-                                                                .value
-                                                        ? AppColors.primaryColor
-                                                        : AppColors
-                                                            .secondaryColor,
-                                                    fontFamily: "Roboto",
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  double displayedPrice =
-                                                      product.price;
-                                                  int priceInCents =
-                                                      (displayedPrice * 100)
-                                                          .toInt();
-                                                  Get.to(() =>
-                                                      PaymentProcessingScreen(
-                                                        productPrice:
-                                                            priceInCents
-                                                                .toDouble(),
-                                                        itemProduct: product,
-                                                      ));
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  minimumSize:
-                                                      const Size(30, 36),
-                                                  backgroundColor: storage.read(
-                                                                  'isDarkMode') ==
-                                                              true ||
-                                                          cont.isDarkTheme.value
-                                                      ? AppColors.primaryColor
-                                                      : AppColors.greenColor,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                  ),
-                                                ),
-                                                child: Text(
-                                                  'Buy'.tr,
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily: "Roboto",
-                                                    color: AppColors.whiteColor,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                  child: Obx(() {
+                    return ListView.builder(
+                      padding: EdgeInsets.zero,
+                      itemCount: devController.products.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == devController.products.length) {
+                          return SizedBox(height: 100);
+                        }
+                        final product = devController.products[index];
+                        return buildProductItem(product);
+                      },
+                    );
+                  }),
                 ),
               ],
             ),
@@ -335,6 +178,134 @@ class _DashboardViewScreenState extends State<DashboardViewScreen> {
                 unselectedIcon: Icons.support_agent,
                 selectedColor: AppColors.primaryColor),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildProductItem(Product product) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: GestureDetector(
+        onTap: () {
+          double displayedPrice = product.price;
+          int priceInCents = (displayedPrice * 100).toInt();
+
+          Get.to(() => PaymentProcessingScreen(
+                productPrice: priceInCents.toDouble(),
+                itemProduct: product,
+              ));
+        },
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: storage.read('isDarkMode') == true || cont.isDarkTheme.value
+                ? AppColors.secondaryColor.withOpacity(0.4)
+                : AppColors.whiteColor,
+            border: Border.all(color: AppColors.whiteColor),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: product.imagePath.isNotEmpty
+                      ? Image.network(
+                          "https://ava.sa/app/storage/uploads/is_cover_image/${product.imagePath}",
+                          width: MediaQuery.of(context).size.width * 0.3,
+                          height: MediaQuery.of(context).size.height * 0.22,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Placeholder(),
+                        )
+                      : const Placeholder(),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          languageController.selectedLanguage.value == 'ar'
+                              ? product.namearabic
+                              : product.name.tr,
+                          style: TextStyle(
+                              color: storage.read('isDarkMode') == true ||
+                                      cont.isDarkTheme.value
+                                  ? AppColors.whiteColor
+                                  : AppColors.secondaryColor,
+                              fontFamily: "Roboto",
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          languageController.selectedLanguage.value == 'ar'
+                              ? product.descriptionarabic
+                              : product.description.tr,
+                          style: TextStyle(
+                              color: storage.read('isDarkMode') == true ||
+                                      cont.isDarkTheme.value
+                                  ? AppColors.whiteColor
+                                  : AppColors.secondaryColor,
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '${product.price.toStringAsFixed(2)} SAR'.tr,
+                              style: TextStyle(
+                                  color: storage.read('isDarkMode') == true ||
+                                          cont.isDarkTheme.value
+                                      ? AppColors.primaryColor
+                                      : AppColors.secondaryColor,
+                                  fontFamily: "Roboto",
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                double displayedPrice = product.price;
+                                int priceInCents =
+                                    (displayedPrice * 100).toInt();
+                                Get.to(() => PaymentProcessingScreen(
+                                      productPrice: priceInCents.toDouble(),
+                                      itemProduct: product,
+                                    ));
+                              },
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(30, 36),
+                                backgroundColor:
+                                    storage.read('isDarkMode') == true ||
+                                            cont.isDarkTheme.value
+                                        ? AppColors.primaryColor
+                                        : AppColors.greenColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              child: Text('Buy',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.whiteColor)),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

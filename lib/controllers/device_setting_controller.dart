@@ -39,7 +39,6 @@ class DeviceSettingController extends GetxController {
   Future<void> saveSettings() async {
     String boardId = boardIdCont.text.trim();
     if (boardId.isEmpty) {
-      Get.snackbar("Error", "Board ID cannot be empty");
       return;
     }
 

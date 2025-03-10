@@ -1,6 +1,7 @@
 import 'package:demo_nfc/config/colors.dart';
 import 'package:demo_nfc/controllers/theme_controller.dart';
 import 'package:demo_nfc/models/product_model.dart';
+import 'package:demo_nfc/widgets/custom_textfield.dart'; // Import customTextField
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -14,7 +15,8 @@ class AddProductScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final storage = GetStorage();
     final ThemeController cont = Get.put(ThemeController());
-    String imageUrl = "https://ava.sa/app/storage/uploads/is_cover_image/${product.imagePath}";
+    String imageUrl =
+        "https://ava.sa/app/storage/uploads/is_cover_image/${product.imagePath}";
 
     return Scaffold(
       appBar: AppBar(
@@ -31,7 +33,7 @@ class AddProductScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -55,49 +57,93 @@ class AddProductScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            // Product Name
-            Text("English Name: ${product.name}", style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: storage.read('isDarkMode') == true || cont.isDarkTheme.value
-                    ? AppColors.whiteColor
-                    : AppColors.primaryColor,
-              ),
-            ),
-                  Text("Arabic Name: ${product.namearabic}",
-              style: const TextStyle(fontSize: 18, color: Colors.grey),
-            ),
-            const SizedBox(height: 10),
-            // Description
 
-             Text("English Description: ${product.description}",
-              style: const TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
+            // English Name
+            _buildTitle("English Name"),
+            customTextField(
+              hintText: "English Name",
+              controller: TextEditingController(text: product.name),
+              readOnly: true,
             ),
 
-              
-            Text("Arabic Description: ${product.descriptionarabic}",
-              style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic, color: Colors.grey),
-              textAlign: TextAlign.center,
+            const SizedBox(height: 10),
+
+            // Arabic Name
+            _buildTitle("Arabic Name"),
+            customTextField(
+              hintText: "Arabic Name",
+              controller: TextEditingController(text: product.namearabic),
+              readOnly: true,
             ),
+
             const SizedBox(height: 10),
-            // Product ID & Price
-            
-     
-             
-                Text("Product ID: ${product.id}", 
-                style: const TextStyle(fontSize: 16),
-                textAlign: TextAlign.center,),
-                
-                // Text("Selection ID: ${product.tid}", style: const TextStyle(fontSize: 16)),
-              
-            
+
+            // English Description
+            _buildTitle("English Description"),
+            customTextField(
+              hintText: "English Description",
+              controller: TextEditingController(text: product.description),
+              readOnly: true,
+            ),
+
             const SizedBox(height: 10),
-            Text("Price: ${product.price}\SR",
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 255, 255))),
+
+            // Arabic Description
+            _buildTitle("Arabic Description"),
+            customTextField(
+              hintText: "Arabic Description",
+              controller:
+                  TextEditingController(text: product.descriptionarabic),
+              readOnly: true,
+            ),
+
             const SizedBox(height: 10),
-            Text("Timer: ${product.timer}", style: const TextStyle(fontSize: 16)),
+
+            // Product ID
+            _buildTitle("Product ID"),
+            customTextField(
+              hintText: "Product ID",
+              controller: TextEditingController(text: product.id.toString()),
+              readOnly: true,
+            ),
+
+            const SizedBox(height: 10),
+
+            // Price
+            _buildTitle("Price (SAR)"),
+            customTextField(
+              hintText: "Price",
+              controller: TextEditingController(text: "${product.price} SAR"),
+              readOnly: true,
+            ),
+
+            const SizedBox(height: 10),
+
+            // Timer
+            _buildTitle("Timer"),
+            customTextField(
+              hintText: "Timer",
+              controller: TextEditingController(text: product.timer.toString()),
+              readOnly: true,
+            ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // Helper method to create title for each field
+  Widget _buildTitle(String title) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0),
+        child: Text(
+          title.tr,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

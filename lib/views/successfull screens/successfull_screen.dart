@@ -59,7 +59,7 @@ class SuccessfullScreen extends StatelessWidget {
     final String url = 'https://ava.com.sa/pos/?'
         'board_id=${deviceSettingController.settingsBox.get('boardId', defaultValue: '')}&'
         'machine_id=${deviceSettingController.settingsBox.get('machineId', defaultValue: '')}&'
-        'user_id=${storeSettingController.settingsBox.get('userId', defaultValue: '')}&'
+        'user_id=${deviceSettingController.settingsBox.get('createdBy', defaultValue: '')}&' //'user_id=${storeSettingController.settingsBox.get('userId', defaultValue: '')}&'
         'currency=${storeSettingController.settingsBox.get('currency', defaultValue: '')}&'
         'product_name=${latestProduct.name}&'
         'product_id=${latestProduct.id}&'
@@ -108,14 +108,21 @@ class SuccessfullScreen extends StatelessWidget {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(14),
                               child: latestProduct.imagePath.isNotEmpty
-                                  ? Image.file(
-                                      File(latestProduct.imagePath),
+                                  ? Image.network(
+                                      "https://ava.sa/app/storage/uploads/is_cover_image/${latestProduct.imagePath}",
                                       width: MediaQuery.of(context).size.width *
                                           0.3,
                                       height:
                                           MediaQuery.of(context).size.height *
                                               0.22,
                                       fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              const Icon(
+                                        Icons.broken_image,
+                                        size: 50,
+                                        color: Colors.grey,
+                                      ),
                                     )
                                   : const Placeholder(),
                             ),

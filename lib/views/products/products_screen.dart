@@ -104,7 +104,7 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                       onTap: () {
                         Get.to(() => AddProductScreen(
                               product: product,
-                              productIndex: index,
+                              
                             ));
                       },
                     ),

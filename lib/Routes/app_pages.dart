@@ -65,10 +65,10 @@ class AppPages {
       name: _Paths.productViewScreen,
       page: () => ProductViewScreen(),
     ),
-    GetPage(
-      name: _Paths.addProductScreen,
-      page: () => AddProductScreen(),
-    ),
+   GetPage(
+  name: _Paths.addProductScreen,
+  page: () => AddProductScreen(product: Get.arguments), // Pass the product from Get.arguments
+),
     GetPage(
       name: _Paths.helpScreen,
       page: () => HelpScreen(),

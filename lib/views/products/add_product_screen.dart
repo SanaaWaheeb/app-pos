@@ -5,11 +5,15 @@ import 'package:demo_nfc/widgets/custom_textfield.dart'; // Import customTextFie
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:demo_nfc/controllers/device_setting_controller.dart';
 
 class AddProductScreen extends StatelessWidget {
   final Product product;
 
-  const AddProductScreen({super.key, required this.product});
+  final DeviceSettingController deviceController =
+      Get.find<DeviceSettingController>(); // Access DeviceSettingController
+
+  AddProductScreen({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -110,10 +114,12 @@ class AddProductScreen extends StatelessWidget {
             const SizedBox(height: 10),
 
             // Price
-            _buildTitle("Price (SAR)"),
+            _buildTitle('Price (${deviceController.currencyCont.text})'),
             customTextField(
               hintText: "Price",
-              controller: TextEditingController(text: "${product.price} SAR"),
+              controller: TextEditingController(
+                  text:
+                      "${product.price} ${deviceController.currencyCont.text}"),
               readOnly: true,
             ),
 

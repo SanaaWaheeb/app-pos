@@ -260,7 +260,8 @@ class _DashboardViewScreenState extends State<DashboardViewScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '${product.price.toStringAsFixed(2)} SAR'.tr,
+                              '${product.price.toStringAsFixed(2)} ${devController.currencyCont.text}'
+                                  .tr,
                               style: TextStyle(
                                   color: storage.read('isDarkMode') == true ||
                                           cont.isDarkTheme.value

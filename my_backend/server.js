@@ -37,7 +37,7 @@ app.get('/products/:boardId', (req, res) => {
         const machineId = machineResults[0].id;
 
         // Step 2: Find track_ids from tracks table for this machine id
-        const trackQurry = "SELECT product, price, name from tracks where machine = ?";
+        const trackQurry = "SELECT id, product, price, name from tracks where machine = ?";
         db.query(trackQurry, [machineId], (err, trackResults) => {
             if (err || trackResults.length === 0) {
                 return res.status(404).json({ error: "No tracks found for this machine" });
@@ -59,6 +59,7 @@ app.get('/products/:boardId', (req, res) => {
                         id: product.id? product.id.toString() : '',
                         price: track ? track.price : product.price,
                         timer: track ? track.name.toString() : '',
+                        tid: track ? track.id.toString() : '',
                     }
                 })
                 res.json(finalProducts);
@@ -70,14 +71,34 @@ app.get('/products/:boardId', (req, res) => {
 // API route: fetch machine id and user id
 app.get('/machine-details/:boardId', (req, res) => {
     const boardId = req.params.boardId;
-    const query = "SELECT id, created_by from machines where machine_board_id = ?";
-    db.query(query, [boardId],  (err, result) => {
-        if (err || result.length === 0) {
+    const machineQyery = "SELECT id, created_by from machines where machine_board_id = ?";
+    db.query(machineQyery, [boardId],  (err, machineResult) => {
+        if (err || machineResult.length === 0) {
             return res.status(404).json({ error: "Machine not found" });
         }
-        res.json(result[0]);
+        const machineId = machineResult[0].id;
+        const createdBy = machineResult[0].created_by;
+
+        // Fetch currency from store table using user id
+        const currencyQuery = "SELECT currency from stores where created_by = ?";
+        db.query(currencyQuery, [createdBy], (err, currencyResult) => {
+            if (err || currencyResult.length === 0) {
+                return res.status(404).json({ error: "Store not found" });
+            }
+            const currency = currencyResult[0].currency;
+
+            // Return combined object with id, created_by, and currency
+            console.log("VV: ", currency);
+            res.json({
+                id: machineId,
+                created_by: createdBy,
+                currency: currency
+            });
+        })
+
     })
 });
+
 
 
 // Start Server

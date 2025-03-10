@@ -8,6 +8,7 @@ class DeviceSettingController extends GetxController {
   TextEditingController boardIdCont = TextEditingController();
   TextEditingController machineIdCont = TextEditingController();
   TextEditingController createdByCont = TextEditingController();
+  TextEditingController currencyCont = TextEditingController();
   TextEditingController secondBeforeCont = TextEditingController();
   TextEditingController secondAfterCont = TextEditingController();
 
@@ -27,6 +28,7 @@ class DeviceSettingController extends GetxController {
     boardIdCont.text = settingsBox.get('boardId', defaultValue: '');
     machineIdCont.text = settingsBox.get('machineId', defaultValue: '');
     createdByCont.text = settingsBox.get('createdBy', defaultValue: '');
+    currencyCont.text = settingsBox.get('currency', defaultValue: 'SAR');
     secondBeforeCont.text = settingsBox.get('secondBefore', defaultValue: '');
     secondAfterCont.text = settingsBox.get('secondAfter', defaultValue: '');
 
@@ -50,34 +52,13 @@ class DeviceSettingController extends GetxController {
     debugPrint('Second After Starting: ${secondAfterCont.text}');
 
     try {
-      // Fetch Machine details first
-      Map<String, dynamic>? machineDetails =
-          await ApiService.fetchMachineDetails(boardId);
-
-      if (machineDetails != null) {
-        String machineId = machineDetails["id"].toString();
-        String createdBy = machineDetails["created_by"].toString();
-
-        // Update UI fields
-        machineIdCont.text = machineId;
-        createdByCont.text = createdBy;
-
-        // Save settings after fetching machine details
-        await settingsBox.put('machineId', machineId);
-        await settingsBox.put('createdBy', createdBy);
-
-        debugPrint('Settings saved successfully:');
-        debugPrint('Machine ID: $machineId');
-        debugPrint('Created By: $createdBy');
-      } else {
-        Get.snackbar("Error", "Machine not found for this Board ID.");
-      }
+      await ApiService.fetchMachineDetails(boardId);
     } catch (e) {
       Get.snackbar("Error", "Failed to save settings: ${e.toString()}");
     }
   }
 
-  // Fetch machine ID based on Board ID and store it
+  // Fetch machine ID based on Board ID and store id
   Future<void> fetchMachineDetails(String boardId) async {
     try {
       Map<String, dynamic>? response =
@@ -85,15 +66,19 @@ class DeviceSettingController extends GetxController {
       if (response != null) {
         String machineId = response["id"].toString();
         String createdBy = response["created_by"].toString();
+        String currency = response['currency'].toString();
 
         machineIdCont.text = machineId;
         createdByCont.text = createdBy;
+        currencyCont.text = currency;
 
         await settingsBox.put('machineId', machineId);
         await settingsBox.put('createdBy', createdBy);
+        await settingsBox.put('currency', currency);
 
         debugPrint("Fetched Machine ID: $machineId");
         debugPrint("Fetched Created By: $createdBy");
+        debugPrint('Fetched Currency: $currency');
       } else {
         Get.snackbar("Error", "Machine ID not found for this Board ID");
       }

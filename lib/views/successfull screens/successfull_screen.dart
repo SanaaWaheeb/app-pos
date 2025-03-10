@@ -60,7 +60,7 @@ class SuccessfullScreen extends StatelessWidget {
         'board_id=${deviceSettingController.settingsBox.get('boardId', defaultValue: '')}&'
         'machine_id=${deviceSettingController.settingsBox.get('machineId', defaultValue: '')}&'
         'user_id=${deviceSettingController.settingsBox.get('createdBy', defaultValue: '')}&' //'user_id=${storeSettingController.settingsBox.get('userId', defaultValue: '')}&'
-        'currency=${storeSettingController.settingsBox.get('currency', defaultValue: '')}&'
+        'currency=${deviceSettingController.settingsBox.get('currency', defaultValue: 'SAR')}&'
         'product_name=${latestProduct.name}&'
         'product_id=${latestProduct.id}&'
         'track_id=${latestProduct.tid}&'

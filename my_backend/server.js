@@ -23,7 +23,6 @@ db.connect(err => {
 });
 
 // ------------------ Define API routes ------------------
-
 // API Route: filter products
 app.get('/products/:boardId', (req, res) => {
     const boardId = req.params.boardId;
@@ -66,7 +65,19 @@ app.get('/products/:boardId', (req, res) => {
             })
         })
     })
-})
+});
+
+// API route: fetch machine id and user id
+app.get('/machine-details/:boardId', (req, res) => {
+    const boardId = req.params.boardId;
+    const query = "SELECT id, created_by from machines where machine_board_id = ?";
+    db.query(query, [boardId],  (err, result) => {
+        if (err || result.length === 0) {
+            return res.status(404).json({ error: "Machine not found" });
+        }
+        res.json(result[0]);
+    })
+});
 
 
 // Start Server

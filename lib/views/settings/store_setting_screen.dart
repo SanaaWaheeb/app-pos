@@ -2,6 +2,7 @@ import 'package:demo_nfc/Routes/app_pages.dart';
 import 'package:demo_nfc/config/colors.dart';
 import 'package:demo_nfc/controllers/store_setting_controller.dart';
 import 'package:demo_nfc/controllers/theme_controller.dart';
+import 'package:demo_nfc/controllers/device_setting_controller.dart'; // Import DeviceSettingController
 import 'package:demo_nfc/widgets/customButton.dart';
 import 'package:demo_nfc/widgets/custom_textfield.dart';
 import 'package:demo_nfc/widgets/theme_handler.dart';
@@ -14,8 +15,10 @@ class StoreSettingScreen extends StatelessWidget {
   StoreSettingScreen({super.key});
   final StoreSettingController storeController =
       Get.put(StoreSettingController());
+  final DeviceSettingController deviceController =
+      Get.find<DeviceSettingController>(); // Fetch device settings
   final storage = GetStorage();
-   final ThemeController cont = Get.put(ThemeController());
+  final ThemeController cont = Get.put(ThemeController());
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +46,8 @@ class StoreSettingScreen extends StatelessWidget {
                 width: Get.width * 0.9,
                 padding: const EdgeInsets.all(16),
                 decoration: ShapeDecoration(
-                  color: storage.read('isDarkMode') == true || cont.isDarkTheme.value
+                  color: storage.read('isDarkMode') == true ||
+                          cont.isDarkTheme.value
                       ? AppColors.secondaryColor.withOpacity(0.4)
                       : Colors.white,
                   shape: RoundedRectangleBorder(
@@ -54,15 +58,45 @@ class StoreSettingScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
+                      // Title for User ID
+                      Text(
+                        "User ID".tr,
+                        style: const TextStyle(
+                          fontFamily: "Roboto",
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      // User ID - Auto-filled & Readonly
                       customTextField(
-                          hintText: "User ID".tr,
-                          controller: storeController.userIdCont),
+                        hintText: "User ID".tr,
+                        controller: TextEditingController(
+                            text: deviceController.createdByCont.text),
+                        readOnly: true, // Prevent editing
+                      ),
+
                       const SizedBox(height: 20),
+
+                      // Title for Currency
+                      Text(
+                        "Currency".tr,
+                        style: const TextStyle(
+                          fontFamily: "Roboto",
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      // Currency - Fixed to "SAR"
                       customTextField(
-                          hintText: "Currency".tr,
-                          controller: storeController.currencyCont),
+                        hintText: "Currency".tr,
+                        controller: TextEditingController(text: "SAR"),
+                        readOnly: true, // Prevent editing
+                      ),
                       const SizedBox(height: 20),
                     ],
                   ),
@@ -73,7 +107,8 @@ class StoreSettingScreen extends StatelessWidget {
                 width: Get.width * 0.9,
                 padding: const EdgeInsets.all(8),
                 decoration: ShapeDecoration(
-                  color: storage.read('isDarkMode') == true || cont.isDarkTheme.value
+                  color: storage.read('isDarkMode') == true ||
+                          cont.isDarkTheme.value
                       ? AppColors.secondaryColor.withOpacity(0.4)
                       : Colors.white,
                   shape: RoundedRectangleBorder(
@@ -100,12 +135,13 @@ class StoreSettingScreen extends StatelessWidget {
                   ),
                 ),
               ),
-               const SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 width: Get.width * 0.9,
                 padding: const EdgeInsets.all(4),
                 decoration: ShapeDecoration(
-                  color: storage.read('isDarkMode') == true || cont.isDarkTheme.value
+                  color: storage.read('isDarkMode') == true ||
+                          cont.isDarkTheme.value
                       ? AppColors.secondaryColor.withOpacity(0.4)
                       : Colors.white,
                   shape: RoundedRectangleBorder(
@@ -145,14 +181,19 @@ class StoreSettingScreen extends StatelessWidget {
                   color: AppColors.whiteColor,
                 ),
                 onTap: () async {
+                  storeController.userIdCont.text =
+                      deviceController.createdByCont.text; // Auto-fill User ID
+                  storeController.currencyCont.text =
+                      "SAR"; // Auto-fill Currency
+
                   await storeController.storeSettings();
-                  //  storeController.clearFields();
+
                   Get.snackbar(
                     "Success".tr,
                     "Store settings saved successfully".tr,
                     snackPosition: SnackPosition.TOP,
                   );
-                   Get.toNamed(Routes.settingScreen);
+                  Get.toNamed(Routes.settingScreen);
                 },
               ),
             ],

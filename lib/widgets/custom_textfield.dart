@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-Widget customTextField({TextEditingController? controller, String? hintText}) {
+Widget customTextField(
+    {TextEditingController? controller,
+    String? hintText,
+    bool readOnly = false}) {
   final storage = GetStorage();
-   final ThemeController cont = Get.put(ThemeController());
+  final ThemeController cont = Get.put(ThemeController());
   return SizedBox(
     height: Get.height * 0.065,
     child: TextField(
@@ -14,6 +17,7 @@ Widget customTextField({TextEditingController? controller, String? hintText}) {
       textAlignVertical: TextAlignVertical.center,
       textAlign: TextAlign.center,
       keyboardType: TextInputType.text,
+      readOnly: readOnly,
       decoration: InputDecoration(
         hintText: hintText,
         border: OutlineInputBorder(
@@ -40,7 +44,7 @@ Widget customTextField({TextEditingController? controller, String? hintText}) {
         fontWeight: FontWeight.w700,
         color: storage.read('isDarkMode') == true || cont.isDarkTheme.value
             ? AppColors.whiteColor
-            : AppColors.primaryColor, 
+            : AppColors.primaryColor,
       ),
     ),
   );

@@ -8,8 +8,8 @@ app.use(express.json());
 
 // MySQL Connection
 const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
+    host: "127.0.0.1",
+    user: "u513213599_sys",
     password: "",
     database: "u513213599_sys"
 });

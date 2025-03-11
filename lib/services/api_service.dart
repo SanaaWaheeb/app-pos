@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl = "ava.sa/app-pos";
+  static const String baseUrl = "http://ava.sa/ava-app";
 
   // Fetch products based on board id
   static Future<List<dynamic>> fetchProducts(String boardId) async {

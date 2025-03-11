@@ -217,8 +217,10 @@ class _DashboardViewScreenState extends State<DashboardViewScreen> {
                           width: MediaQuery.of(context).size.width * 0.3,
                           height: MediaQuery.of(context).size.height * 0.22,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Placeholder(),
+                          errorBuilder: (context, error, stackTrace) => Icon(
+                              Icons.broken_image,
+                              size: 100,
+                              color: Colors.grey),
                         )
                       : const Placeholder(),
                 ),

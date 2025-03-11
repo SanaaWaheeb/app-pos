@@ -91,10 +91,11 @@ class StoreSettingScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 5),
-                      // Currency - Fixed to "SAR"
+                      // Currency
                       customTextField(
                         hintText: "Currency".tr,
-                        controller: TextEditingController(text: "SAR"),
+                        controller: TextEditingController(
+                            text: deviceController.currencyCont.text),
                         readOnly: true, // Prevent editing
                       ),
                       const SizedBox(height: 20),
